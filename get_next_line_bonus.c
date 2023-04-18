@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apanikov <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/04 14:38:24 by apanikov          #+#    #+#             */
-/*   Updated: 2023/04/04 14:38:46 by apanikov         ###   ########.fr       */
+/*   Created: 2023/04/07 17:26:51 by apanikov          #+#    #+#             */
+/*   Updated: 2023/04/07 17:26:58 by apanikov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*read_line(int fd, char *buffer)
 {
@@ -71,19 +71,19 @@ char	*ft_out(char *buffer)
 
 char	*get_next_line(int fd)
 {
-	char static	*buffer = NULL;
+	char static	*buffer[OPEN_MAX];
 	char		*out;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0 || fd > OPEN_MAX)
 		return (NULL);
-	buffer = read_line(fd, buffer);
-	if (buffer[0] == '\0')
+	buffer[fd] = read_line(fd, buffer[fd]);
+	if (buffer[fd][0] == '\0')
 	{
-		free(buffer);
-		buffer = NULL;
+		free(buffer[fd]);
+		buffer[fd] = NULL;
 		return (NULL);
 	}
-	out = ft_out(buffer);
-	buffer = rebuffer(buffer);
+	out = ft_out(buffer[fd]);
+	buffer[fd] = rebuffer(buffer[fd]);
 	return (out);
 }
